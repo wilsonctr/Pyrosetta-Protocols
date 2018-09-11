@@ -26,10 +26,11 @@ def resi_within(pose, angstrom, the_sun):
     return sorted(list(set(resi_within)))[0:-1]
 
 
-def CA_distance(res_num_1, res_num_2):
+def CA_distance(pose, res_num_1, res_num_2):
 
     res_1 = {}
     res_2 = {}
+
     for lig_atom in str(pose.residue(res_num_1)).split('Atom Coordinates:')[1].replace(' ','').split('\n')[1:-2]:
         res_1[lig_atom.split(':')[0]] = lig_atom.split(':')[1]
 
@@ -40,11 +41,9 @@ def CA_distance(res_num_1, res_num_2):
         distance = math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2)
         return distance
 
-    CA_coords = [float(i) for i in res_1['CA'].split(',')]
+    CA_coords_res_1 = [float(i) for i in res_1['CA'].split(',')]
+    CA_coords_res_2 = [float(i) for i in res_2['CA'].split(',')]
 
-    distances = []
-    for phosphate_oxygen in phosphate_atoms:
-        PO_coords = [float(i) for i in res_2[phosphate_oxygen].split(',')]
-        distances.append(distance_between_two_xyz_coords(CA_coords, PO_coords))
+    CA_distance = distance_between_two_xyz_coords(CA_coords_res_1, CA_coords_res_2)
 
-    return distances
+    return CA_distance
